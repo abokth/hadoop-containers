@@ -1,3 +1,6 @@
+FROM hadoop-src as hadoopsrc
+ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
+
 FROM centos:8
 
 RUN useradd build
@@ -60,10 +63,11 @@ USER root
 RUN make install
 
 USER build
-ADD hadoop-3.3.0-src.tar.gz /home/build
 WORKDIR /home/build
+COPY --from=hadoopsrc /hadoop-3.3.0-src.tar.gz /home/build
 USER root
-RUN chown -R build:build /home/build/hadoop-3.3.0-src
+RUN tar xf hadoop-3.3.0-src.tar.gz
+RUN chown -R build:build hadoop-3.3.0-src
 USER build
 WORKDIR /home/build/hadoop-3.3.0-src
 RUN mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip
