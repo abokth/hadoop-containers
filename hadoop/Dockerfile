@@ -5,7 +5,6 @@ FROM centos:8
 
 RUN useradd build
 USER build
-RUN id
 WORKDIR /home/build
 
 # * Install development tools such as GCC, autotools, OpenJDK and Maven.
