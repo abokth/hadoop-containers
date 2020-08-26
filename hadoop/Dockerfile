@@ -6,7 +6,6 @@ FROM centos:8 AS protobuf
 
 # * Install development tools such as GCC, autotools, OpenJDK and Maven.
 RUN dnf -y group install --with-optional 'Development Tools'
-RUN dnf -y install java-1.8.0-openjdk-devel maven
 
 # * Install Protocol Buffers v3.7.1.
 RUN useradd build
@@ -28,7 +27,6 @@ FROM centos:8 AS isal
 
 # * Install development tools such as GCC, autotools, OpenJDK and Maven.
 RUN dnf -y group install --with-optional 'Development Tools'
-RUN dnf -y install java-1.8.0-openjdk-devel maven
 
 # * Install libraries provided by CentOS 8.
 RUN dnf -y install libtirpc-devel zlib-devel lz4-devel bzip2-devel openssl-devel cyrus-sasl-devel libpmem-devel
@@ -42,6 +40,7 @@ RUN dnf -y --enablerepo=epel install libzstd-devel
 
 # * Install optional dependencies (isa-l).
 RUN dnf -y --enablerepo=PowerTools install nasm
+
 RUN useradd build
 USER build
 WORKDIR /home/build
