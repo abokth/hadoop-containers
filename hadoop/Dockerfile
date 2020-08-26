@@ -42,12 +42,13 @@ USER build
 RUN git clone https://github.com/intel/isa-l
 WORKDIR /home/build/isa-l
 RUN ./autogen.sh
-RUN ./configure
+RUN mkdir ../isa-l-build
+WORKDIR /home/build/isa-l-build
+RUN ../isa-l/configure --prefix=/home/build/isa-l-install
 RUN make -j3
-USER root
 RUN make install
+RUN rm -rf /home/build/isa-l-build
 
-USER build
 WORKDIR /home/build
 COPY --from=hadoopsrc /hadoop-3.3.0-src.tar.gz /home/build
 USER root
@@ -55,4 +56,4 @@ RUN tar xf hadoop-3.3.0-src.tar.gz
 RUN chown -R build:build hadoop-3.3.0-src
 USER build
 WORKDIR /home/build/hadoop-3.3.0-src
-RUN env PROTOBUF_HOME=/home/build/protobuf-install PKG_CONFIG_PATH=/home/build/protobuf-install/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip
+RUN env PROTOBUF_HOME=/home/build/protobuf-install PKG_CONFIG_PATH=/home/build/protobuf-install/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip -Disal.prefix=/home/build/isa-l-install
