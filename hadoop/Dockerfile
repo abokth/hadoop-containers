@@ -77,8 +77,14 @@ RUN dnf -y --enablerepo=epel install libzstd-devel
 RUN dnf -y --enablerepo=PowerTools install nasm
 
 RUN useradd build
-USER build
 WORKDIR /home/build
+
+COPY --from=hadoopsrc /hadoop-3.3.0-src.tar.gz /home/build
+USER root
+RUN tar xf hadoop-3.3.0-src.tar.gz
+RUN chown -R build:build hadoop-3.3.0-src
+USER build
+WORKDIR /home/build/hadoop-3.3.0-src
 
 # Dist sources along with binaries.
 COPY --from=protobuf /home/build/protobuf /home/build/protobuf
@@ -88,10 +94,4 @@ COPY --from=protobuf /home/build/protobuf-install /home/build/protobuf-install
 COPY --from=isal /home/build/isa-l /home/build/isa-l
 COPY --from=isal /home/build/isa-l-install /home/build/isa-l-install
 
-COPY --from=hadoopsrc /hadoop-3.3.0-src.tar.gz /home/build
-USER root
-RUN tar xf hadoop-3.3.0-src.tar.gz
-RUN chown -R build:build hadoop-3.3.0-src
-USER build
-WORKDIR /home/build/hadoop-3.3.0-src
 RUN env PROTOBUF_HOME=/home/build/protobuf-install PKG_CONFIG_PATH=/home/build/protobuf-install/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip -Disal.prefix=/home/build/isa-l-install
