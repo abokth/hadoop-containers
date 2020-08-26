@@ -56,7 +56,7 @@ WORKDIR /home/build
 RUN rm -rf /home/build/isa-l-build
 
 
-FROM centos:8
+FROM centos:8 AS hadoopbuild
 
 # * Install development tools such as GCC, autotools, OpenJDK and Maven.
 RUN dnf -y group install --with-optional 'Development Tools'
@@ -94,3 +94,17 @@ COPY --from=isal /home/build/isa-l /home/build/isa-l
 COPY --from=isal /home/build/isa-l-install /home/build/isa-l-install
 
 RUN env PROTOBUF_HOME=/home/build/protobuf-install PKG_CONFIG_PATH=/home/build/protobuf-install/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip -Disal.prefix=/home/build/isa-l-install
+RUN mv hadoop-dist/target/hadoop-3.3.0.tar.gz /home/build/
+WORKDIR /home/build/
+RUN rm -rf /home/build/hadoop-3.3.0-src
+
+
+FROM centos:8
+
+# Install runtime deps only.
+RUN dnf -y install keyutils-libs krb5-libs libcom_err libgcc libselinux libstdc++ libtirpc openssl-libs pcre2 snappy zlib
+
+RUN useradd build
+WORKDIR /home/build
+
+COPY --from=protobuf /home/build/* /home/build/
