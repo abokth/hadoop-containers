@@ -14,9 +14,8 @@ RUN dnf -y install java-1.8.0-openjdk-devel maven
 
 # * Install Protocol Buffers v3.7.1.
 USER build
-RUN git clone https://github.com/protocolbuffers/protobuf
+RUN git clone -b v3.7.1 https://github.com/protocolbuffers/protobuf
 WORKDIR /home/build/protobuf
-RUN git checkout v3.7.1
 RUN autoreconf -i
 RUN mkdir ../protobuf-build
 WORKDIR /home/build/protobuf-build
@@ -24,6 +23,7 @@ RUN ../protobuf/configure --prefix=/home/build/protobuf-install
 RUN make -j3
 RUN make install
 WORKDIR /home/build
+RUN rm -rf /home/build/protobuf-build
 
 # * Install libraries provided by CentOS 8.
 USER root
@@ -55,4 +55,4 @@ RUN tar xf hadoop-3.3.0-src.tar.gz
 RUN chown -R build:build hadoop-3.3.0-src
 USER build
 WORKDIR /home/build/hadoop-3.3.0-src
-RUN env PKG_CONFIG_PATH=/home/build/protobuf-install/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip
+RUN env PROTOBUF_HOME=/home/build/protobuf-install PKG_CONFIG_PATH=/home/build/protobuf-install/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip
