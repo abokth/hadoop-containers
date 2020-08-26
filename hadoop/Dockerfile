@@ -1,4 +1,4 @@
-FROM hadoop-src as hadoopsrc
+FROM quay.io/abokth/hadoop-containers-hadoop-src as hadoopsrc
 ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
 
 
