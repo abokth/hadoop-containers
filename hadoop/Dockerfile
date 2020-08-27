@@ -11,6 +11,7 @@ ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
 
 
 FROM quay.io/abokth/hadoop-containers-hadoopmvn AS hadoopmvn
+ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
 
 
 FROM buildenv AS protobuf
