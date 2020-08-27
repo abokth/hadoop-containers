@@ -35,6 +35,21 @@ WORKDIR /src
 USER build
 
 
+FROM buildenv AS hadoopmvn
+
+COPY --from=hadoopsrc /hadoop-3.3.0-src.tar.gz /src/
+USER root
+WORKDIR /home/build
+RUN tar xf /src/hadoop-3.3.0-src.tar.gz
+RUN chown -R build:build hadoop-3.3.0-src
+USER build
+WORKDIR /home/build/hadoop-3.3.0-src
+
+RUN mvn dependency:go-offline || sleep 180
+RUN mvn dependency:go-offline || sleep 360
+RUN mvn dependency:go-offline || sleep 720
+
+
 FROM buildenv AS protobuf
 
 # * Install Protocol Buffers v3.7.1.
@@ -64,15 +79,7 @@ WORKDIR /home/build
 RUN rm -rf /home/build/isa-l-build
 
 
-FROM buildenv AS hadoopbuild
-
-COPY --from=hadoopsrc /hadoop-3.3.0-src.tar.gz /src/
-USER root
-WORKDIR /home/build
-RUN tar xf /src/hadoop-3.3.0-src.tar.gz
-RUN chown -R build:build hadoop-3.3.0-src
-USER build
-WORKDIR /home/build/hadoop-3.3.0-src
+FROM hadoopmvn AS hadoopbuild
 
 # Dist sources along with binaries.
 COPY --from=protobuf /src/protobuf /src/protobuf
