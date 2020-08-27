@@ -18,18 +18,8 @@ FROM quay.io/abokth/hadoop-containers-protobuf AS protobuf
 ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
 
 
-FROM buildenv AS isal
-
-RUN git clone https://github.com/intel/isa-l
-WORKDIR isa-l
-RUN ./autogen.sh
-RUN mkdir /home/build/isa-l-build
-WORKDIR /home/build/isa-l-build
-RUN /src/isa-l/configure --prefix=/app/isa-l
-RUN make -j3
-RUN make install
-WORKDIR /home/build
-RUN rm -rf /home/build/isa-l-build
+FROM quay.io/abokth/hadoop-containers-isa-l AS isa-l
+ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
 
 
 FROM hadoopmvn AS hadoopbuild
@@ -39,8 +29,8 @@ COPY --from=protobuf /src/protobuf /src/protobuf
 COPY --from=protobuf /app/protobuf /app/protobuf
 
 # Dist sources along with binaries.
-COPY --from=isal /src/isa-l /src/isa-l
-COPY --from=isal /app/isa-l /app/isa-l
+COPY --from=isa-l /src/isa-l /src/isa-l
+COPY --from=isa-l /app/isa-l /app/isa-l
 
 RUN env PROTOBUF_HOME=/app/protobuf PKG_CONFIG_PATH=/app/protobuf/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip -Disal.prefix=/app/isa-l || sleep 60
 RUN env PROTOBUF_HOME=/app/protobuf PKG_CONFIG_PATH=/app/protobuf/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip -Disal.prefix=/app/isa-l || sleep 360
