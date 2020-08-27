@@ -89,6 +89,8 @@ COPY --from=protobuf /app/protobuf /app/protobuf
 COPY --from=isal /src/isa-l /src/isa-l
 COPY --from=isal /app/isa-l /app/isa-l
 
+RUN env PROTOBUF_HOME=/app/protobuf PKG_CONFIG_PATH=/app/protobuf/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip -Disal.prefix=/app/isa-l || sleep 60
+RUN env PROTOBUF_HOME=/app/protobuf PKG_CONFIG_PATH=/app/protobuf/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip -Disal.prefix=/app/isa-l || sleep 360
 RUN env PROTOBUF_HOME=/app/protobuf PKG_CONFIG_PATH=/app/protobuf/lib/pkgconfig mvn package -Pdist,native -DskipTests -Dmaven.javadoc.skip -Disal.prefix=/app/isa-l
 RUN mv hadoop-dist/target/hadoop-3.3.0.tar.gz /app/
 WORKDIR /home/build/
