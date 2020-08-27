@@ -2,12 +2,7 @@ FROM quay.io/abokth/hadoop-containers-hadoop-src as hadoopsrc
 ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
 
 
-FROM centos:8 AS runtime
-
-# Install runtime deps only.
-RUN dnf -y update
-RUN dnf -y install keyutils-libs krb5-libs libcom_err libgcc libselinux libstdc++ libtirpc openssl-libs pcre2 snappy zlib
-RUN dnf clean all
+FROM quay.io/abokth/hadoop-containers-runtime AS runtime
 
 FROM runtime AS buildenv
 
