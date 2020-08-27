@@ -2,11 +2,7 @@ FROM quay.io/abokth/hadoop-containers-hadoop-src as hadoopsrc
 ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
 
 
-FROM quay.io/abokth/hadoop-containers-buildenv AS buildenv
-ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
-
-
-FROM buildenv
+FROM quay.io/abokth/hadoop-containers-buildenv
 
 COPY --from=hadoopsrc /hadoop-3.3.0-src.tar.gz /src/
 USER root

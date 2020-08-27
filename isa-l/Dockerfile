@@ -1,8 +1,4 @@
-FROM quay.io/abokth/hadoop-containers-buildenv AS buildenv
-ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
-
-
-FROM buildenv
+FROM quay.io/abokth/hadoop-containers-buildenv
 
 RUN git clone https://github.com/intel/isa-l
 WORKDIR isa-l

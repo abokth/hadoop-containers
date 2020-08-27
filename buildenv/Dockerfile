@@ -1,6 +1,4 @@
-FROM quay.io/abokth/hadoop-containers-runtime AS runtime
-
-FROM runtime
+FROM quay.io/abokth/hadoop-containers-runtime
 
 # * Install development tools such as GCC, autotools, OpenJDK and Maven.
 RUN dnf -y group install --with-optional 'Development Tools'

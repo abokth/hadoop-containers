@@ -1,15 +1,3 @@
-FROM quay.io/abokth/hadoop-containers-hadoop-src as hadoopsrc
-ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
-
-
-FROM quay.io/abokth/hadoop-containers-runtime AS runtime
-ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
-
-
-FROM quay.io/abokth/hadoop-containers-buildenv AS buildenv
-ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
-
-
 FROM quay.io/abokth/hadoop-containers-hadoopmvn AS hadoopmvn
 ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
 
@@ -40,7 +28,7 @@ WORKDIR /home/build/
 RUN rm -rf /home/build/hadoop-3.3.0-src
 
 
-FROM runtime
+FROM quay.io/abokth/hadoop-containers-runtime
 
 COPY --from=hadoopbuild /src /src
 COPY --from=hadoopbuild /app /app

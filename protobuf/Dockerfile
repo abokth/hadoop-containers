@@ -1,8 +1,4 @@
-FROM quay.io/abokth/hadoop-containers-buildenv AS buildenv
-ENV FOO="Workaround https://github.com/containers/buildah/issues/1920"
-
-
-FROM buildenv
+FROM quay.io/abokth/hadoop-containers-buildenv
 
 # * Install Protocol Buffers v3.7.1.
 RUN git clone -b v3.7.1 https://github.com/protocolbuffers/protobuf
